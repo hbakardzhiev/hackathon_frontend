@@ -6,6 +6,7 @@ import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import { Link } from "react-router-dom";
 
 export const mainListItems = (
     <React.Fragment>
@@ -19,7 +20,8 @@ export const mainListItems = (
             <ListItemIcon>
                 <AssignmentIcon />
             </ListItemIcon>
-            <ListItemText primary="Create Cleaning Task" />
+            <Link to="/cleaning">CleateCleanTask</Link>
+            {/* <ListItemText primary="Create Cleaning Task" /> */}
         </ListItemButton>
     </React.Fragment>
 );
