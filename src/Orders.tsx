@@ -6,52 +6,33 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Title from './Title';
+import { Urgency } from './model/Urgency';
+import Checkbox from '@mui/material/Checkbox';
+import Button from '@mui/material/Button';
+import axios from 'axios';
+
 
 // Generate Order Data
 function createData(
     id: number,
-    date: string,
-    name: string,
-    shipTo: string,
-    paymentMethod: string,
-    amount: number,
-) {
-    return { id, date, name, shipTo, paymentMethod, amount };
+    problem: String,
+    urgency: Urgency,
+    location: String,
+    availableTime: Date,
+    taken: boolean,
+    done: boolean) {
+    return { id, problem, urgency, location, availableTime, taken, done };
 }
 
 const rows = [
     createData(
         0,
-        '16 Mar, 2019',
-        'Elvis Presley',
-        'Tupelo, MS',
-        'VISA ⠀•••• 3719',
-        312.44,
-    ),
-    createData(
-        1,
-        '16 Mar, 2019',
-        'Paul McCartney',
-        'London, UK',
-        'VISA ⠀•••• 2574',
-        866.99,
-    ),
-    createData(2, '16 Mar, 2019', 'Tom Scholz', 'Boston, MA', 'MC ⠀•••• 1253', 100.81),
-    createData(
-        3,
-        '16 Mar, 2019',
-        'Michael Jackson',
-        'Gary, IN',
-        'AMEX ⠀•••• 2000',
-        654.39,
-    ),
-    createData(
-        4,
-        '15 Mar, 2019',
-        'Bruce Springsteen',
-        'Long Branch, NJ',
-        'VISA ⠀•••• 5919',
-        212.79,
+        "The room is not ",
+        Urgency.urgent,
+        "Room1",
+        new Date(),
+        true,
+        true
     ),
 ];
 
@@ -60,27 +41,48 @@ function preventDefault(event: React.MouseEvent) {
 }
 
 export default function Orders() {
+    type StateType = { id: number, check: boolean }
+    const [taken, setTaken] = React.useState<StateType>();
+
+    const [done, setDone] = React.useState<StateType>();
+
     return (
         <React.Fragment>
             <Title>Recent Orders</Title>
             <Table size="small">
                 <TableHead>
                     <TableRow>
-                        <TableCell>Date</TableCell>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Ship To</TableCell>
-                        <TableCell>Payment Method</TableCell>
-                        <TableCell align="right">Sale Amount</TableCell>
+                        <TableCell>Problem</TableCell>
+                        <TableCell>urgency</TableCell>
+                        <TableCell>Location</TableCell>
+                        <TableCell>Task taken</TableCell>
+                        <TableCell>Done</TableCell>
+
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {rows.map((row) => (
                         <TableRow key={row.id}>
-                            <TableCell>{row.date}</TableCell>
-                            <TableCell>{row.name}</TableCell>
-                            <TableCell>{row.shipTo}</TableCell>
-                            <TableCell>{row.paymentMethod}</TableCell>
-                            <TableCell align="right">{`$${row.amount}`}</TableCell>
+                            <TableCell>{row.problem}</TableCell>
+                            <TableCell>{row.urgency.toString()}</TableCell>
+                            <TableCell>{row.location}</TableCell>
+                            <TableCell><Checkbox checked={row.taken}
+                                onChange={(event) => setTaken({ id: row.id, check: event.target.value === "true" })}
+                            ></Checkbox></TableCell>
+                            <TableCell><Checkbox checked={row.done}
+                                onChange={(event) => setDone({ id: row.id, check: event.target.value === "true" })}
+                            ></Checkbox></TableCell>
+                            <TableCell><Button variant="contained"
+                                onClick={(event) => {
+                                    axios.post("localhost:5000/taken", taken).
+                                        then(function (response) {
+                                            console.log(response);
+                                        })
+                                    axios.post("localhost:5000/api-done", done)
+                                        .then(function (response) {
+                                            console.log(response);
+                                        })
+                                }}>Submit</Button></TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
