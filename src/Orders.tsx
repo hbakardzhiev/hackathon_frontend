@@ -72,6 +72,7 @@ export default function Orders() {
                             <TableCell><Checkbox checked={row.done}
                                 onChange={(event) => setDone({ id: row.id, check: event.target.value === "true" })}
                             ></Checkbox></TableCell>
+
                             <TableCell><Button variant="contained"
                                 onClick={(event) => {
                                     axios.post("localhost:5000/taken", taken).
