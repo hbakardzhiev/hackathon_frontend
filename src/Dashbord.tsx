@@ -21,7 +21,7 @@ import { mainListItems } from './listItems';
 import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
-import BasicSelect from './User_urgency_select';
+// import BasicSelect from './User_urgency_select';
 
 function Copyright(props: any) {
     return (
@@ -198,11 +198,11 @@ function DashboardContent() {
                                     <Orders />
                                 </Paper>
                             </Grid>
-                            <Grid item xs={3}>
+                            {/* <Grid item xs={3}>
                                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                                     <BasicSelect />
                                 </Paper>
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                         <Copyright sx={{ pt: 4 }} />
                     </Container>
