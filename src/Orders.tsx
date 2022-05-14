@@ -84,7 +84,8 @@ export default function Orders() {
                         <TableCell>Location</TableCell>
                         <TableCell>Task taken</TableCell>
                         <TableCell>Done</TableCell>
-
+                        <TableCell>Time to start</TableCell>
+                        <TableCell>Time to end</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -112,17 +113,20 @@ export default function Orders() {
                             // )}
                             ></Checkbox></TableCell>
 
+                            <TableCell>{row.aval_time_start}</TableCell>
+                            <TableCell>{row.aval_time_end}</TableCell>
+
                             <TableCell><Button variant="contained"
                                 onClick={(event) => {
                                     console.log(taken);
-                                    axios.post("http://localhost:5000/taken", {}).
+                                    axios.post("http://localhost:5000/taken", data).
                                         then(function (response) {
                                             console.log(response);
                                         })
                                         .catch((er) => {
                                             console.log(er);
                                         })
-                                    axios.post("http://localhost:5000/done", done)
+                                    axios.post("http://localhost:5000/done", data)
                                         .catch((er) => {
                                             console.log(er);
                                         })
