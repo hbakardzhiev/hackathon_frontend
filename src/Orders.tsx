@@ -24,6 +24,21 @@ function createData(
     return { id, problem, urgency, location, availableTime, taken, done };
 }
 
+export interface GetData {
+    aval_time_end: string;
+    aval_time_start: string;
+    done: boolean;
+    id: number;
+    location: string;
+    problem: string;
+    taken: boolean;
+    urgency: string;
+}
+export interface StateType {
+    id: number;
+    check: boolean;
+}
+
 const rows = [
     createData(
         0,
@@ -40,11 +55,23 @@ function preventDefault(event: React.MouseEvent) {
     event.preventDefault();
 }
 
-export default function Orders() {
-    type StateType = { id: number, check: boolean }
-    const [taken, setTaken] = React.useState<StateType>();
 
-    const [done, setDone] = React.useState<StateType>();
+export default function Orders() {
+
+    const [taken, setTaken] = React.useState<StateType[]>();
+
+    const [done, setDone] = React.useState<StateType[]>();
+
+    const [data, setData] = React.useState<GetData[]>();
+
+
+
+    React.useEffect(() => {
+        axios.get<GetData[]>("http://localhost:5000/api-get").then((response) => {
+            setData(response.data);
+        });
+    }, []);
+
 
     return (
         <React.Fragment>
@@ -61,34 +88,50 @@ export default function Orders() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map((row) => (
+                    {data && data.map((row) => (
                         <TableRow key={row.id}>
                             <TableCell>{row.problem}</TableCell>
                             <TableCell>{row.urgency.toString()}</TableCell>
                             <TableCell>{row.location}</TableCell>
                             <TableCell><Checkbox checked={row.taken}
-                                onChange={(event) => setTaken({ id: row.id, check: event.target.value === "true" })}
+                                onChange={(event) => setData(arr => {
+                                    if (arr) {
+                                        const curr = arr[row.id - 1];
+                                        curr.taken = event.target.value === "true";
+                                        arr.splice(row.id - 1, 0, curr);
+                                        return arr;
+                                    }
+                                }
+                                )}
                             ></Checkbox></TableCell>
                             <TableCell><Checkbox checked={row.done}
-                                onChange={(event) => setDone({ id: row.id, check: event.target.value === "true" })}
+                            // onChange={(event) => setDone(arr =>
+                            //     arr &&
+                            //     [...arr,
+                            //     { id: row.id, check: event.target.value === "true" }]
+                            // )}
                             ></Checkbox></TableCell>
 
                             <TableCell><Button variant="contained"
                                 onClick={(event) => {
-                                    axios.post("localhost:5000/taken", taken).
+                                    console.log(taken);
+                                    axios.post("http://localhost:5000/taken", {}).
                                         then(function (response) {
                                             console.log(response);
                                         })
-                                    axios.post("localhost:5000/api-done", done)
-                                        .then(function (response) {
-                                            console.log(response);
+                                        .catch((er) => {
+                                            console.log(er);
+                                        })
+                                    axios.post("http://localhost:5000/done", done)
+                                        .catch((er) => {
+                                            console.log(er);
                                         })
                                 }}>Submit</Button></TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
-            <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
+            <Link color="primary" href="" onClick={preventDefault} sx={{ mt: 3 }}>
                 See more orders
             </Link>
         </React.Fragment>
